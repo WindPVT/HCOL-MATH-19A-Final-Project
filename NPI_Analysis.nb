@@ -1,12 +1,12 @@
 
-beta = (1.400)*(4/75)*7.26*1.64;
+beta = (1.400)*(0.053)*1.64*7.26;
 sigma = 1.828;
 gamma = 1.400;
 omega = 0.083;  
 vaccine = 0;
 
 Nh = Sh + Eh + Ih + Rh;
-f = 0.72 (0.00054 + Exp[0.10464*t]);
+f = 0.83*(0.00054 + Exp[0.10464*t]);
 
 
 dShdt[Sh_, Eh_, Ih_, Rh_] = (-beta*((Sh*Ih)/Nh)) + (omega*Rh) - f - 
@@ -17,7 +17,7 @@ dRhdt[Sh_, Eh_, Ih_, Rh_] = (gamma*Ih) - (omega*Rh) + vaccine*Sh;
 dCdt[Ih_] = gamma*Ih;
 
 
-Sh0 = 2105; Eh0 = 0; Ih0 = 5; Rh0 = 0;  C0 = 0;
+Sh0 = 2109; Eh0 = 0; Ih0 = 2; Rh0 = 0;  C0 = 0;
 finalTime = 16;
 
 
@@ -55,3 +55,4 @@ table = Table[{t, Census[t] /. sol}, {t, 0, 16, 1}];
 table;
 
 Export["PredictedCumulativeIncidence.csv", table, "CSV"];
+  
