@@ -54,7 +54,7 @@ summary(exponential.model)
 timevalues <- seq(0,16,1)
 
 Counts.exponential1 <- exp(predict(exponential.model,list(Time=timevalues)))
-Counts.exponential2 <- 0.72*Counts.exponential1
+Counts.exponential2 <- 0.83*Counts.exponential1
 
 plot(Time, CommunityIncidence,pch=19)
 lines(timevalues, Counts.exponential1,lwd=3, col = "#F8766D", xlab = "Week", ylab = "Community Incidence")
@@ -64,24 +64,24 @@ lines(timevalues, Counts.exponential2,lwd=3, col = "#00BFC4", xlab = "Week", yla
 
 #### GRAPHING BASELINE MODEL VS OBSERVED ####
 
-B <- data.frame(time = c(seq(0,16,1)),
+Baseline <- data.frame(time = c(seq(0,16,1)),
                 predicted = c(0,
-                            3.97166991419933,
-                            5.54231230220643,
-                            6.62155733927081,
-                            7.64326308201649,
-                            8.72717492895942,
-                            9.91565072219823,
-                            11.2306625253039,
-                            12.6892977312013,
-                            14.308342233393,
-                            16.1057712377832,
-                            18.1013404804322,
-                            20.3169211372919,
-                            22.7767755181771,
-                            25.5078328978135,
-                            28.5399877215478,
-                            31.9064251312341),
+                              1.702828131203937,
+                              2.734131305539344,
+                              3.7531142425075674,
+                              4.863695538575096,
+                              6.092688175625426,
+                              7.45624307357501,
+                              8.969880659748096,
+                              10.650323556768111,
+                              12.516011924961768,
+                              14.58738355874803,
+                              16.887118178159067,
+                              19.44039148425854,
+                              22.27515142141862,
+                              25.42242307724367,
+                              28.916649367795344,
+                              32.796064515942696),
                 observed = c(1,
                              1,
                              2,
@@ -100,37 +100,41 @@ B <- data.frame(time = c(seq(0,16,1)),
                              32,
                              34))
 
-head(B)
+Baseline <- gather(Baseline,key="predobs",value="infections",2:3)
 
-ggplot(data=B,aes(x=Time))+
-  geom_line(aes(x=Time,y=observed), color = "#00BFC4",size=1.5)+
-  geom_point(aes(x=Time,y=observed), color = "#00BFC4",size=2.5)+
-  geom_line(aes(x=Time,y=predicted),color="#F8766D", size=1.5)+
-  geom_point(aes(x=Time,y=predicted),color="#F8766D",size=2.5)+
+head(Baseline)
+
+ggplot(data=Baseline,aes(x=time,y=infections, color = predobs))+
+  geom_line(size=1)+
+  geom_point(size=2)+
   theme_classic()+
+  scale_color_manual(values = c("#00BFC4","#F8766D"))+
   xlab("Week")+
-  ylab("Number of COVID-19 Cases")
+  ylab("Number of SARS-CoV-2 Infections")+
+  labs(color="Legend")+
+  theme(legend.position=c(0.05,0.9))
 
-#### NO MITIGATION MEASURES ####
 
-C <- data.frame(time = c(seq(0,16,1)),
+#### NO MASKING ####
+
+NoMask <- data.frame(time = c(seq(0,16,1)),
                 predicted = c(0,
-                              4.59707503482223,
-                              7.81942994317941,
-                              10.7591314616023,
-                              13.5999610382176,
-                              16.4492599309373,
-                              19.3915151136817,
-                              22.4972410645091,
-                              25.8278898870735,
-                              29.4394335356113,
-                              33.3850704939516,
-                              37.7173089599354,
-                              42.4896052734774,
-                              47.7576915464544,
-                              53.5806852143186,
-                              60.0220546435963,
-                              67.1504914112009),
+                              1.845671450044687,
+                              3.2619077628186504,
+                              4.746531482111625,
+                              6.365170063480959,
+                              8.147044128237573,
+                              10.116776726703483,
+                              12.298565423638674,
+                              14.717620375301435,
+                              17.401010345943625,
+                              20.378261217731186,
+                              23.681836527477053,
+                              27.347571439392365,
+                              31.415095944159766,
+                              35.92827342999932,
+                              40.93566279748021,
+                              46.49102326879028),
                 observed = c(1,
                              1,
                              2,
@@ -149,19 +153,123 @@ C <- data.frame(time = c(seq(0,16,1)),
                              32,
                              34))
 
-head(C)
+NoMask <- gather(NoMask,key="predobs",value="infections",2:3)
 
-ggplot(data=C,aes(x=Time))+
-  geom_line(aes(x=Time,y=observed), color="#00BFC4",size=1.5)+
-  geom_point(aes(x=Time,y=observed), color="#00BFC4",size=2.5)+
-  geom_line(aes(x=Time,y=predicted),color="#F8766D", size=1.5)+
-  geom_point(aes(x=Time,y=predicted),color="#F8766D",size=2.5)+
+ggplot(data=NoMask,aes(x=time,y=infections, color = predobs))+
+  geom_line(size=1)+
+  geom_point(size=2)+
   theme_classic()+
+  scale_color_manual(values = c("#00BFC4","#F8766D"))+
   xlab("Week")+
-  ylab("Number of COVID-19 Cases")
+  ylab("Number of SARS-CoV-2 Infections")+
+  labs(color="Legend")+
+  theme(legend.position=c(0.05,0.9))
 
+
+
+#### NO VENTILATION ####
+
+NoVent <- data.frame(time = c(seq(0,16,1)),
+                     predicted = c(0,
+                                   1.7169834164712747,
+                                   2.783180740152855,
+                                   3.8398691892068957,
+                                   4.98881571325188,
+                                   6.258476752469488,
+                                   7.666362693318737,
+                                   9.228888401434652,
+                                   10.963465794727892,
+                                   12.889177143119785,
+                                   15.027126288749253,
+                                   17.400713880894262,
+                                   20.035908017552547,
+                                   22.96153137386904,
+                                   26.209575730678374,
+                                   29.8155522747388,
+                                   33.818876050213426),
+                     observed = c(1,
+                                  1,
+                                  2,
+                                  2,
+                                  3,
+                                  4,
+                                  5,
+                                  8,
+                                  13,
+                                  16,
+                                  17,
+                                  19,
+                                  27,
+                                  29,
+                                  31,
+                                  32,
+                                  34))
+
+NoVent <- gather(NoVent,key="predobs",value="infections",2:3)
+
+ggplot(data=NoVent,aes(x=time,y=infections, color = predobs))+
+  geom_line(size=1)+
+  geom_point(size=2)+
+  theme_classic()+
+  scale_color_manual(values = c("#00BFC4","#F8766D"))+
+  xlab("Week")+
+  ylab("Number of SARS-CoV-2 Infections")+
+  labs(color="Legend")+
+  theme(legend.position=c(0.05,0.9))
+
+#### NO MASKING, NO VENTILATION ####
+
+NoMaskNoVent <- data.frame(time = c(seq(0,16,1)),
+                     predicted = c(0,
+                                   1.9582047934636067,
+                                   3.7302998978076323,
+                                   5.7373377354963555,
+                                   8.011435478457376,
+                                   10.569168830495663,
+                                   13.431358278886254,
+                                   16.623720035554268,
+                                   20.176683700547496,
+                                   24.12532951197118,
+                                   28.509461315782744,
+                                   33.373792709845965,
+                                   38.76822374558172,
+                                   44.748194120965444,
+                                   51.37510304172519,
+                                   58.716796209141236,
+                                   66.84809590518435),
+                     observed = c(1,
+                                  1,
+                                  2,
+                                  2,
+                                  3,
+                                  4,
+                                  5,
+                                  8,
+                                  13,
+                                  16,
+                                  17,
+                                  19,
+                                  27,
+                                  29,
+                                  31,
+                                  32,
+                                  34))
+
+NoMaskNoVent <- gather(NoMaskNoVent,key="predobs",value="infections",2:3)
+
+ggplot(data=NoMaskNoVent,aes(x=time,y=infections, color = predobs))+
+  geom_line(size=1)+
+  geom_point(size=2)+
+  theme_classic()+
+  scale_color_manual(values = c("#00BFC4","#F8766D"))+
+  xlab("Week")+
+  ylab("Number of SARS-CoV-2 Infections")+
+  labs(color="Legend")+
+  theme(legend.position=c(0.05,0.9))
 
 #### MEAN INCUBATION PERIOD ####
+
+# create data frame
 IncPer <- data.frame(days = c(2,2,2,
                               3,3,3,3,3,3,3,
                               4,4,4,4,4,4,4,
@@ -169,12 +277,18 @@ IncPer <- data.frame(days = c(2,2,2,
                               6,6))
 head(IncPer)
 
+# calculate mean incubation period
+mean(IncPer$days)
+
+# plot histogram
 ggplot(data=IncPer,aes(x=days))+
   geom_histogram(binwidth=1,color="white",fill="#00BFC4")+
   theme_classic()
 
 
 #### INTERRUPTED TIME SERIES FOR MASKING ####
+
+# create data frame
 itsData <- data.frame(week=c(-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6),
                       School_Incidence=c(2654.028436,
                                          1706.161137,
@@ -229,6 +343,7 @@ itsData <- data.frame(week=c(-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6),
                            2949,
                            746))
 
+# create ITS plot
 its_plot <- ggplot(itsData, aes(week)) +  
   geom_line(aes(y = School_Incidence), color = "#00BFC4",size=1.2) +
   geom_line(aes(y = Community_Incidence), color = "black",linetype="dashed",size=1.2)+
