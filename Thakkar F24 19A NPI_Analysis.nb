@@ -1,26 +1,35 @@
 
-beta = (1.400)*(0.053)*1.64*7.26;
+(*Set Parameter Values*)
+beta = (1.400)*(0.0625);
 sigma = 1.828;
 gamma = 1.400;
 omega = 0.083;  
 vaccine = 0;
 
+
+(*Simplyfying Assumption*)
 Nh = Sh + Eh + Ih + Rh;
-f = 0.83*(0.00054 + Exp[0.10464*t]);
 
 
-dShdt[Sh_, Eh_, Ih_, Rh_] = (-beta*((Sh*Ih)/Nh)) + (omega*Rh) - f - 
-   vaccine*Sh;
-dEhdt[Sh_, Eh_, Ih_, Rh_] = (beta*((Sh*Ih)/Nh)) - sigma*Eh + f;
+(*Define the function f*)
+f = 0.68*0.0006*(1.1103108^t);
+
+
+(*Define the Sytem of ODEs*)
+dShdt[Sh_, Eh_, Ih_, Rh_] = (-beta*((Sh*Ih)/Nh)) + (omega*Rh) - f*Sh -
+    vaccine*Sh;
+dEhdt[Sh_, Eh_, Ih_, Rh_] = (beta*((Sh*Ih)/Nh)) - sigma*Eh + f*Sh;
 dIhdt[Sh_, Eh_, Ih_, Rh_] = (sigma*Eh) - (gamma*Ih);
 dRhdt[Sh_, Eh_, Ih_, Rh_] = (gamma*Ih) - (omega*Rh) + vaccine*Sh;
 dCdt[Ih_] = gamma*Ih;
 
 
-Sh0 = 2109; Eh0 = 0; Ih0 = 2; Rh0 = 0;  C0 = 0;
+(*Set Initial Conditions*)
+Sh0 = 2108; Eh0 = 0; Ih0 = 2;  C0 = 0;
 finalTime = 16;
 
 
+(*Solve the System ODEs*)
 sol = NDSolve[{
     Sh'[t] == dShdt[Sh[t], Eh[t], Ih[t], Rh[t]],
     Eh'[t] == dEhdt[Sh[t], Eh[t], Ih[t], Rh[t]],
@@ -31,7 +40,7 @@ sol = NDSolve[{
     Census[0] == C0}, {Sh, Eh, Ih, Rh, Census}, {t, 0, finalTime}];
 
 
-
+(*Plot each compartment vs. time*)
 Plot[Evaluate[{Sh[t]} /. sol], {t, 0, finalTime}, 
  AxesLabel -> {"Time", "Susceptible "}, PlotRange -> All, 
  PlotLegends -> {"Sh(t)"}]
@@ -50,9 +59,11 @@ Plot[Evaluate[{Census[t]} /. sol], {t, 0, finalTime},
 
 solution = sol[[1]];
 
+
+(*Create and Export a Table of C(t) for Data Visulization Use in R*)
 table = Table[{t, Census[t] /. sol}, {t, 0, 16, 1}];
 
 table;
 
 Export["PredictedCumulativeIncidence.csv", table, "CSV"];
-  
+
