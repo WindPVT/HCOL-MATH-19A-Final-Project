@@ -301,3 +301,188 @@ ggplot(itsData, aes(week)) +
   geom_ribbon(aes(ymin=y3,ymax=y4),fill="#00BFC4",alpha=0.2)+
   xlab("Week") + ylab("COVID-19 Cases per 100,000")+
   theme_classic()
+
+IRR<-matrix(c(10,71,2100,2039),nrow = 2, ncol = 2)
+rateratio.wald(IRR)
+
+
+
+#### COMMUNITY INCIDENCE AND MASKING POLICY ANALYSIS ####
+
+# Bar Graph #
+
+BarGraphData <- data.frame(CommunityIncidence = c("0002","0010","0050","0100","0500","1000","2000"),
+                  NoMaskMandate = c(2,4,12,23,96,166,258),
+                  MaskMandate = c(0,0,1,2,9,16,27))
+
+BarGraphData <- gather(BarGraphData,key="MaskPolicy",value="SecondaryInfections",2:3)
+
+ggplot(data = BarGraphData)+
+  geom_bar(aes(x=CommunityIncidence,y=SecondaryInfections,fill=MaskPolicy,color=MaskPolicy),stat = "identity",
+           position = position_dodge())+
+  xlab("Community Incidence per 100,000 Persons") + ylab("Number of Secondary SARS-CoV-2 Infections")+
+  theme_classic()
+  
+# Linear Regressions #
+
+LinRegCommIncNoMask <- data.frame(CommunityIncidence = c(2,10,50,100,500,1000,2000),
+                                  SecondaryInfections = c(2,4,12,23,96,166,258))
+
+LinModCommIncNoMask <- lm(SecondaryInfections~CommunityIncidence, data=LinRegCommIncNoMask)
+summary(LinModCommIncNoMask)
+
+ggplot(data=LinRegCommIncNoMask, aes(x=CommunityIncidence, y=SecondaryInfections)) +
+  geom_point() +
+  stat_smooth(method="lm",se=FALSE,color="#F8766D")+
+  labs(x = "Community Incidence per 100,000 Persons",
+       y = "Predicted Secondary Infections")+
+  theme_classic()
+
+  ##
+  
+LinRegCommIncMask <- data.frame(CommunityIncidence = c(2,10,50,100,500,1000,2000),
+                                    SecondaryInfections = c(0,0,1,2,9,16,27))
+  
+LinModCommIncMask <- lm(SecondaryInfections~CommunityIncidence, data=LinRegCommIncMask)
+summary(LinModCommIncMask)
+  
+ggplot(data=LinRegCommIncMask, aes(x=CommunityIncidence, y=SecondaryInfections)) +
+  geom_point() +
+  stat_smooth(method="lm",se=FALSE,color="#00BFC4")+
+labs(x = "Community Incidence per 100,000 Persons",
+     y = "Secondary Infections")
+
+
+
+dfx <- data.frame(time = c(seq(0,16,1)),
+                  "0002 per 100,000" = c(0,
+                          1.7038292858595614,
+                          2.5427870021442898,
+                          3.060709016293248,
+                          3.399967449488923,
+                          3.633451966199988,
+                          3.8038667196582963,
+                          3.93664630236676,
+                          4.0469671978217345,
+                          4.143886912233917,
+                          4.232811081995397,
+                          4.316965876983234,
+                          4.398276687462223,
+                          4.47789257173169,
+                          4.556499219230511,
+                          4.634505742506043,
+                          4.7121561324876),
+                  "0010 per 100,000" = c(0,
+                           1.7396361734390384,
+                           2.7109830881928567,
+                           3.431236186595899,
+                           4.01534807306014,
+                           4.519090098526016,
+                           4.974907200632111,
+                           5.402112474756104,
+                           5.812231563139481,
+                           6.212144234979199,
+                           6.605957570244411,
+                           6.996123428737934,
+                           7.384105793856603,
+                           7.770778871473538,
+                           8.15666483767808,
+                           8.54207579094622,
+                           8.927198498129854),
+                  "0050 per 100,000" = c(0,
+                          1.9186434476714596,
+                          3.5516325592713294,
+                          5.282514928951149,
+                          7.088700857180296,
+                          8.940032393719477,
+                          10.817454064490956,
+                          12.709583203133704,
+                          14.609687897743017,
+                          16.513814249851013,
+                          18.419663160451066,
+                          20.325918192804604,
+                          22.231845345996177,
+                          24.137053735781635,
+                          26.041353344722296,
+                          27.944670397683176,
+                          29.846997089944477),
+                  "0100 per 100,000" = c(0,
+                           2.1423389260464867,
+                           4.601669179866739,
+                           7.593436828927517,
+                           10.922088734295937,
+                           14.449275507030254,
+                           18.09110293257924,
+                           21.797630949763203,
+                           25.53931835487772,
+                           29.29881304090451,
+                           33.06602656376781,
+                           36.835187859165316,
+                           40.60308211608753,
+                           44.36800016730837,
+                           48.129112652405716,
+                           51.88609825277112,
+                           55.63892357377637),
+                  "0500 per 100,000" = c(0,
+                           3.9293599196599405,
+                           12.971059850668693,
+                           25.954586878253654,
+                           41.260615624862865,
+                           57.85638982079235,
+                           75.12383260666952,
+                           92.70043741541248,
+                           110.37810044948878,
+                           128.04108442683315,
+                           145.62828787809391,
+                           163.11047652384457,
+                           180.47664544172596,
+                           197.7259279108439,
+                           214.86283905295724,
+                           231.89452430012236,
+                           248.82918993284892),
+                  "1000 per 100,000" = c(0,
+                            6.156795063119442,
+                            23.356050916938162,
+                            48.59445784783335,
+                            78.37916680678657,
+                            110.49775068219384,
+                            143.63915411094618,
+                            177.0541529300839,
+                            210.33442826059786,
+                            243.27412545564906,
+                            275.784581766713,
+                            307.8426917274833,
+                            339.4602440824636,
+                            370.6661276973994,
+                            401.4962560065432,
+                            431.9880781188065,
+                            462.177744472054),
+                  "2000 per 100,000" = c(0,
+                            10.590631602593731,
+                            43.87355351749269,
+                            92.8616149788242,
+                            150.04181782322544,
+                            210.6991093458011,
+                            272.12584150261443,
+                            332.8828913086961,
+                            392.2938255310437,
+                            450.1181015464757,
+                            506.34874020773304,
+                            561.0924776352321,
+                            614.5021711272839,
+                            666.7407990068114,
+                            717.9638038935475,
+                            768.3115887213571,
+                            817.9073449980591))
+
+dfx <- gather(dfx,key="CommunityIncidence",value="TotalInfections",2:8)
+
+dfx
+
+ggplot(data=dfx,aes(x=time,y=TotalInfections, color = CommunityIncidence))+
+  geom_line(size=1)+
+  geom_point(size=2)+
+  theme_classic()+
+  xlab("Week")+
+  ylab("Number of SARS-CoV-2 Infections")+
+  labs(color="Legend")
