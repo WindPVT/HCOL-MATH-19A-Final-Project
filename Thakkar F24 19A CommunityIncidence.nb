@@ -21,7 +21,7 @@ dCdt[Ih_] = gamma*Ih;
 
 (*Set Initial Conditions*)
 Sh0 = 2108; Eh0 = 0; Ih0 = 2;  C0 = 0;
-finalTime = 16;
+finalTime = 100;
 
 (*Solve the System ODEs*)
 sol = NDSolve[{
