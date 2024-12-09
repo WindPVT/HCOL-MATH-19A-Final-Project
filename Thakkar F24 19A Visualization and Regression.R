@@ -1,3 +1,8 @@
+# Math 19a Final Project
+# Harvard College
+# Completed December 09, 2024
+# Pavan V. Thakkar
+
 #### LOAD PACKAGES ####
 library(dplyr)
 library(tidyr)
@@ -307,7 +312,7 @@ rateratio.wald(IRR)
 
 
 
-#### COMMUNITY INCIDENCE AND MASKING POLICY ANALYSIS ####
+#### COMMUNITY INCIDENCE AND MASKING POLICY ANALYSIS AND ADDITIONAL SUPPLEMENTAL ANALYSES ####
 
 # Bar Graph #
 
@@ -479,6 +484,7 @@ dfx <- gather(dfx,key="CommunityIncidence",value="TotalInfections",2:8)
 
 dfx
 
+
 ggplot(data=dfx,aes(x=time,y=TotalInfections, color = CommunityIncidence))+
   geom_line(size=1)+
   geom_point(size=2)+
@@ -486,3 +492,38 @@ ggplot(data=dfx,aes(x=time,y=TotalInfections, color = CommunityIncidence))+
   xlab("Week")+
   ylab("Number of SARS-CoV-2 Infections")+
   labs(color="Legend")
+
+###
+
+InfectByVaxMaskData <- data.frame(VaccinationCoverage = c(0,25,50,75,100),
+                                  NoMaskMandate = c(52,44,36,30,24),
+                                  MaskMandate = c(33,30,27,23,20))
+
+LmTotalByVaxNoMask <- lm(NoMaskMandate~VaccinationCoverage, data=InfectByVaxMaskData)
+summary(LmTotalByVaxNoMask)
+
+LmTotalByVaxMask <- lm(MaskMandate~VaccinationCoverage, data=InfectByVaxMaskData)
+summary(LmTotalByVaxMask)
+
+InfectByVaxMaskData <- gather(InfectByVaxMaskData,key="MaskPolicy",value="TotalInfections",2:3)
+
+ggplot(data=InfectByVaxMaskData,aes(x=VaccinationCoverage,y=TotalInfections,color=MaskPolicy))+
+  geom_point(size=2)+
+  geom_smooth(method=lm,se=FALSE)+
+  theme_classic()+
+  xlab("Vaccination Coverage (%)")+
+  ylab("Total Number of SARS-CoV-2 Infections")+
+  ylim(0,60)
+
+
+SecondaryByVaxMaskData <- data.frame(VaccinationCoverage = c(0,25,50,75,100),
+                                  NoMaskMandate = c(20,15,10,8,5),
+                                  MaskMandate = c(2,1,1,1,1))
+
+
+LmSecondaryByVaxNoMask <- lm(NoMaskMandate~VaccinationCoverage, data=SecondaryByVaxMaskData)
+summary(LmSecondaryByVaxNoMask)
+
+LmSecondaryByVaxMask <- lm(MaskMandate~VaccinationCoverage, data=SecondaryByVaxMaskData)
+summary(LmSecondaryByVaxMask)
+
